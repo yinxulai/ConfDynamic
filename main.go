@@ -4,6 +4,7 @@ import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/logger"
 	"github.com/kataras/iris/middleware/recover"
+	"github.com/yinxulai/ConfDynamic/controller"
 )
 
 func main() {
@@ -15,7 +16,7 @@ func main() {
 	app.Get("/config", controller.GetConfig)
 	app.Get("/application", controller.GetApplication)
 	app.Post("/config", controller.SetConfig)
-	app.Post("/application", fcontroller.SetApplication)
+	app.Post("/application", controller.SetApplication)
 
 	app.Run(iris.Addr(":8080"))
 }

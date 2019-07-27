@@ -2,6 +2,9 @@ package controller
 
 import "github.com/kataras/iris"
 
+type GetApplicationParameter struct {
+}
+
 // GetApplication 获取应用信息
 func GetApplication(ctx iris.Context) {
 	ctx.ServeFile("./public/index.html", false)
