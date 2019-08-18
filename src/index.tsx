@@ -1,14 +1,16 @@
 import React from 'react';
+import Store from './store';
 import ReactDOM from 'react-dom';
+import { observer } from "mobx-react";
 import styles from './index.module.css';
-import Config, { IProps as IConfigProps } from './config';
+import Config, { IConfig } from './config';
 
-console.log(styles)
 
 type State = {
-    configs: IConfigProps[]
+    configs: IConfig[]
 }
 
+@observer
 class App extends React.Component<any, State> {
     constructor(props: any) {
         super(props)
@@ -30,7 +32,13 @@ class App extends React.Component<any, State> {
     }
 
 
+    componentDidMount() {
+        Store.fetchConfig()
+    }
+
     render() {
+        const { configArray: array } = Store
+
         return (
             <div className={styles.root}>
                 <div className={styles.title}>
@@ -38,7 +46,7 @@ class App extends React.Component<any, State> {
                 </div>
                 <div className={styles.content}>
                     {
-                        this.state.configs.map(
+                        array.map(
                             config => <Config key={config.name} {...config} />
                         )
                     }

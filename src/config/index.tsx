@@ -4,7 +4,7 @@ import autobind from 'autobind-decorator';
 
 console.log(styles)
 
-export type IProps = {
+export type IConfig = {
     name: string
     context: string
     enable: boolean
@@ -12,12 +12,12 @@ export type IProps = {
 
 type State = {
     edit: boolean
-    data: IProps
+    data: IConfig
 }
 
-export default class Config extends React.Component<IProps, State> {
+export default class Config extends React.Component<IConfig, State> {
 
-    constructor(props: IProps) {
+    constructor(props: IConfig) {
         super(props)
         this.state = {
             edit: true,
