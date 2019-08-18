@@ -22,7 +22,17 @@
   color: rgba(0, 0, 0, .7);
 }
 
-.close {
+.buttons {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.buttons > * {
+  margin-top: 6px; 
+}
+
+.switchEdit {
+  flex-shrink: 0;
   font-size: 12px;
   cursor: pointer;
   padding: 4px 14px;
