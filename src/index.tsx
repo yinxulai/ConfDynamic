@@ -5,30 +5,10 @@ import { observer } from "mobx-react";
 import styles from './index.module.css';
 import Config, { IConfig } from './config';
 
-
-type State = {
-    configs: IConfig[]
-}
-
 @observer
-class App extends React.Component<any, State> {
+class App extends React.Component<any> {
     constructor(props: any) {
         super(props)
-
-        this.state = {
-            configs: [
-                {
-                    name: "1",
-                    context: "2312",
-                    enable: false
-                },
-                {
-                    name: "213",
-                    context: "31231",
-                    enable: true
-                },
-            ]
-        }
     }
 
 
