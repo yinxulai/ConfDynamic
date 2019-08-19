@@ -1,4 +1,5 @@
 import autobind from 'autobind-decorator';
+import Amplify, { Auth, Storage } from 'aws-amplify';
 import { action, ObservableMap, observable, computed } from 'mobx';
 
 const COS = require('cos-js-sdk-v5');
