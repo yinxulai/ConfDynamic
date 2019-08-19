@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Amplify, { Auth, Storage } from 'aws-amplify';
+// import Amplify, { Auth, Storage } from 'aws-amplify';
 import { action, ObservableMap, observable, computed } from 'mobx';
 
 const COS = require('cos-js-sdk-v5');
@@ -150,7 +150,7 @@ export class Store {
         return new Promise((resolve, reject) => {
             this.createCosClient().deleteObject({
                 Key: name,
-                Region: 'ap-chengdu',
+                Region: 'ap-tokyo',
                 Bucket: 'config-1256073177',
             }, (err: any, data: any) => {
                 if (err) {
@@ -168,7 +168,7 @@ export class Store {
             this.createCosClient().putObject({
                 Key: name,
                 Body: context,
-                Region: 'ap-chengdu',
+                Region: 'ap-tokyo',
                 Bucket: 'config-1256073177',
             }, (err: any, data: any) => {
                 if (err) {
@@ -186,7 +186,7 @@ export class Store {
             this.createCosClient()
                 .getObject({
                     Key: name,
-                    Region: 'ap-chengdu',
+                    Region: 'ap-tokyo',
                     Bucket: 'config-1256073177',
                 }, (err: any, data: any) => {
                     if (err) {
