@@ -1,8 +1,6 @@
+import DB from './s3'
 import autobind from 'autobind-decorator';
-// import Amplify, { Auth, Storage } from 'aws-amplify';
 import { action, ObservableMap, observable, computed } from 'mobx';
-
-const COS = require('cos-js-sdk-v5');
 
 export type IConfig = {
     name: string
@@ -10,7 +8,7 @@ export type IConfig = {
     enable: boolean
 }
 
-export class Store {
+export class Store extends DB {
 
     @observable.ref
     configMap = new ObservableMap<string, IConfig>()
@@ -143,68 +141,6 @@ export class Store {
         return this.saveConfig(data)
     }
 
-    // ======= OSS 对象操作 ======= //
-
-    @autobind // 删除对象
-    private removeObject(name: string): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.createCosClient().deleteObject({
-                Key: name,
-                Region: 'ap-tokyo',
-                Bucket: 'config-1256073177',
-            }, (err: any, data: any) => {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(data.Body)
-                }
-            })
-        })
-    }
-
-    @autobind // 更新上传对象
-    private uploadObject(name: string, context: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            this.createCosClient().putObject({
-                Key: name,
-                Body: context,
-                Region: 'ap-tokyo',
-                Bucket: 'config-1256073177',
-            }, (err: any, data: any) => {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(data.Body)
-                }
-            })
-        })
-    }
-
-    @autobind //  下载对象
-    private downloadObject(name: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            this.createCosClient()
-                .getObject({
-                    Key: name,
-                    Region: 'ap-tokyo',
-                    Bucket: 'config-1256073177',
-                }, (err: any, data: any) => {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        resolve(data.Body)
-                    }
-                })
-        })
-    }
-
-    @autobind // 创建连接
-    private createCosClient(secretId?: string, secretKey?: string, bucketUrl?: string): any {
-        return new COS({
-            SecretId: 'AKIDC8pKZZykc7MK1RPWDKxEExO8bnjOZtjH',
-            SecretKey: '0A4g21jAKEuJRIRIsCGUR8Yn44oPjnaL',
-        });
-    }
 }
 
 export default new Store()
