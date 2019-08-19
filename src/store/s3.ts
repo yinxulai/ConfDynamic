@@ -8,7 +8,7 @@ export default class S3 {
         return new Promise((resolve, reject) => {
             this.createS3Client().deleteObject({
                 Key: name,
-                Bucket: 'cname.configs-manage.com'
+                Bucket: 'configs-manage'
             }, (err) => {
                 if (err) {
                     reject(err.message)
@@ -26,7 +26,7 @@ export default class S3 {
                 Key: name,
                 Body: context,
                 ACL: 'public-read',
-                Bucket: 'cname.configs-manage.com',
+                Bucket: 'configs-manage',
             }, (err, data) => {
                 if (err) {
                     reject(err.message)
@@ -42,7 +42,7 @@ export default class S3 {
         return new Promise((resolve, reject) => {
             this.createS3Client().getObject({
                 Key: name,
-                Bucket: 'cname.configs-manage.com'
+                Bucket: 'configs-manage'
             }, (err, data) => {
                 if (err) {
                     reject(err.message)
