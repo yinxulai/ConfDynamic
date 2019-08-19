@@ -3,13 +3,11 @@ import { action, ObservableMap, observable, computed } from 'mobx';
 
 const COS = require('cos-js-sdk-v5');
 
-
 export type IConfig = {
     name: string
     context: string
     enable: boolean
 }
-
 
 export class Store {
 
@@ -24,20 +22,42 @@ export class Store {
         return [...this.configMap.values()]
     }
 
-    // ======= 对配置的基本操作 ======= // 
+    // ======= 对配置的基本操作 ======= //
 
     // 获取配置
-    @autobind
+    @action.bound
     async fetchConfig(): Promise<void> {
-        const data = await this.downloadObject('front.config.json')
-        return this.updateLocalConfigMap(JSON.parse(data))
+        const result = await this.downloadObject('front.config.json')
+        const data: IConfig | IConfig[] = JSON.parse(result)
+
+        if (Array.isArray(data)) {
+            this.configMap.clear()
+            data.forEach(item =>
+                this.configMap.set(item.name, item)
+            )
+            return
+        }
+
+        this.configMap.set(data.name, data)
     }
 
     // 更新配置
     @autobind
-    async saveConfig(data?: IConfig): Promise<void> {
-        const body = JSON.stringify(data || this.configArray)
-        await this.uploadObject('front.config.json', body)
+    async saveConfig(data?: IConfig | IConfig[]): Promise<void> {
+        if (!data) {
+            await this.uploadObject('front.config.json', JSON.stringify(this.configArray))
+            this.fetchConfig()
+            return
+        }
+
+        if (Array.isArray(data)) {
+            await this.uploadObject('front.config.json', JSON.stringify(data))
+            this.fetchConfig()
+            return
+        }
+
+        const body = this.configMap.toJS().set(data.name, data)
+        await this.uploadObject('front.config.json', JSON.stringify([...body.values()]))
         this.fetchConfig()
     }
 
@@ -47,10 +67,10 @@ export class Store {
     @autobind
     async ensableConfig(name: string) {
         const config = { ...this.configMap.get(name), enable: true } as IConfig
-        this.configMap.set(name, config)
+
         const request = await Promise.all([
-            this.uploadObject(name, config.context),
-            this.uploadObject('front.config.json', JSON.stringify(this.configArray))
+            this.saveConfig(config),
+            this.uploadObject(name, config.context)
         ])
 
         this.fetchConfig()
@@ -61,10 +81,10 @@ export class Store {
     @autobind
     async disableConfig(name: string) {
         const config = { ...this.configMap.get(name), enable: false } as IConfig
-        this.configMap.set(name, config)
+
         const request = await Promise.all([
             this.removeObject(name),
-            this.uploadObject('front.config.json', JSON.stringify(this.configArray))
+            this.saveConfig(config)
         ])
 
         this.fetchConfig()
@@ -74,25 +94,31 @@ export class Store {
     // 删除配置
     @autobind
     async removeConfig(name: string) {
-        const configMap = this.configMap.toJS()
-        configMap.delete(name)
-        this.updateLocalConfigMap([...configMap.values()])
-        await this.saveConfig()
-        await this.removeObject(name)
+        const configs = this.configMap.toJS()
+        configs.delete(name)
+
+        const request = await Promise.all([
+            this.removeObject(name),
+            this.saveConfig([...configs.values()])
+        ])
+
+        this.fetchConfig()
+        return request
     }
 
     //  更新配置
     @autobind
-    async updateConfig(name: string, data: IConfig) {
-        this.updateLocalConfigMap(data)
-        await this.saveConfig()
-        !data.enable
-            ? this.removeObject(name)
+    async updateConfig(data: IConfig) {
+        await this.saveConfig(data)
+        const request = await !data.enable
+            ? this.removeObject(data.name)
             : this.uploadObject(data.name, data.context)
 
+        this.fetchConfig()
+        return request
     }
 
-    // ======= 对编辑中的数据操作 ======= //  
+    // ======= 对编辑中的数据操作 ======= //
 
     @computed
     get creatingConfigArray() {
@@ -113,24 +139,10 @@ export class Store {
     @action.bound
     async saveCreatingConfig(name: string, data: IConfig) {
         this.creatingConfigMap.delete(name)
-        this.updateLocalConfigMap(data)
-        await this.saveConfig()
+        return this.saveConfig(data)
     }
 
-    @action.bound
-    updateLocalConfigMap(data: IConfig | IConfig[]) {
-        if (Array.isArray(data)) {
-            this.configMap.clear()
-            data.forEach(item =>
-                this.configMap.set(item.name, item)
-            )
-            return
-        }
-
-        this.configMap.set(data.name, data)
-    }
-
-    // ======= OSS 对象操作 ======= // 
+    // ======= OSS 对象操作 ======= //
 
     @autobind // 删除对象
     private removeObject(name: string): Promise<void> {

@@ -28,8 +28,34 @@ export default class Config extends React.Component<IProps, State> {
             deleteIsLoading: false,
             data: { ...this.props },
             enableIsLoading: false,
-       
+
         }
+    }
+
+    @autobind
+    errorHandler(err: any) {
+
+        if (err && err.error && err.error.Message) {
+            message.error(err.error.Message);
+            return
+        }
+
+        if (err && err.error) {
+            message.error(err.error);
+            return
+        }
+
+        if (err && err.body) {
+            message.error(err.body);
+            return
+        }
+
+        if (err) {
+            message.error(JSON.stringify(err));
+            return
+        }
+
+        message.error('未知错误');
     }
 
     @autobind
@@ -90,11 +116,11 @@ export default class Config extends React.Component<IProps, State> {
                 await Store.saveCreatingConfig(key, { enable, context, name })
                 message.info('保存成功');
             } else {
-                await Store.updateConfig(key, { enable, context, name })
+                await Store.updateConfig({ enable, context, name })
                 message.info('保存成功');
             }
         } catch (err) {
-            message.error(err);
+            this.errorHandler(err)
         }
     }
 
@@ -116,7 +142,7 @@ export default class Config extends React.Component<IProps, State> {
             Store.removeConfig(name)
             message.info('删除成功');
         } catch (err) {
-            message.error(err);
+            this.errorHandler(err)
         }
     }
 
@@ -132,16 +158,16 @@ export default class Config extends React.Component<IProps, State> {
                 message.info(`启用 ${name} 成功`);
             }
         } catch (err) {
-            message.error(err);
+            this.errorHandler(err)
         }
     }
 
 
     render() {
-        const { edit, data ,saveIsLoading ,deleteIsLoading ,enableIsLoading: enableChangeIsLoading } = this.state
+        const { edit, data, saveIsLoading, deleteIsLoading, enableIsLoading: enableChangeIsLoading } = this.state
         const { isCreate, enable } = this.props
         const { context, name } = data
-  
+
         return (
             <div className={styles.root} >
                 <div className={styles.header} onClick={() => this.switchEdit(true)}>
