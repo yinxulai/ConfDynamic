@@ -150,7 +150,7 @@ export class Store {
             this.createCosClient().deleteObject({
                 Key: name,
                 Region: 'ap-chengdu',
-                Bucket: 'backup-1251578600',
+                Bucket: 'config-1256073177',
             }, (err: any, data: any) => {
                 if (err) {
                     reject(err)
@@ -168,7 +168,7 @@ export class Store {
                 Key: name,
                 Body: context,
                 Region: 'ap-chengdu',
-                Bucket: 'backup-1251578600',
+                Bucket: 'config-1256073177',
             }, (err: any, data: any) => {
                 if (err) {
                     reject(err)
@@ -186,7 +186,7 @@ export class Store {
                 .getObject({
                     Key: name,
                     Region: 'ap-chengdu',
-                    Bucket: 'backup-1251578600',
+                    Bucket: 'config-1256073177',
                 }, (err: any, data: any) => {
                     if (err) {
                         reject(err)
@@ -200,8 +200,8 @@ export class Store {
     @autobind // 创建连接
     private createCosClient(secretId?: string, secretKey?: string, bucketUrl?: string): any {
         return new COS({
-            SecretId: 'AKIDa7TeeVsg093rMgM6A2j060lKhttitPFw',
-            SecretKey: 'iFbljdLrD8rPmzd6NTREpFTTIwOuJYdg',
+            SecretId: 'AKIDC8pKZZykc7MK1RPWDKxEExO8bnjOZtjH',
+            SecretKey: '0A4g21jAKEuJRIRIsCGUR8Yn44oPjnaL',
         });
     }
 }
