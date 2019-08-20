@@ -26,7 +26,7 @@ export class Store {
     // 获取配置
     @action.bound
     async fetchConfig(): Promise<void> {
-        const result = await fetch('/manage/config')
+        const result = await fetch(`/manage/config?${new Date().getTime()}`)
         const { Data } = await result.json()
         this.configMap.clear()
         Data.forEach((config: IConfig) => {
@@ -58,7 +58,7 @@ export class Store {
         }
 
 
-        await fetch("/manage/config", { method: 'PATCH', body })
+        await fetch(`/manage/config?${new Date().getTime()}`, { method: 'PATCH', body })
         this.fetchConfig()
     }
 
