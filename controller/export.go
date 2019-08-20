@@ -20,7 +20,7 @@ func Export(ctx iris.Context) {
 	}
 
 	for _, config := range configs {
-		if config.Name == appid && config.State {
+		if config.Name == appid && config.Enable {
 			ctx.Text(config.Context)
 			return
 		}
