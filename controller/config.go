@@ -15,6 +15,7 @@ func GetView(ctx iris.Context) {
 // GetConfigs 获取配置信息
 func GetConfigs(ctx iris.Context) {
 	data, err := store.ReadConfig()
+
 	if err != nil {
 		ctx.JSON(restful.New(restful.NOTFOUND, err.Error(), nil))
 		return
