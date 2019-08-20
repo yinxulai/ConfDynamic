@@ -1,4 +1,3 @@
-import DB from './s3'
 import autobind from 'autobind-decorator';
 import { action, ObservableMap, observable, computed } from 'mobx';
 
@@ -8,7 +7,8 @@ export type IConfig = {
     enable: boolean
 }
 
-export class Store extends DB {
+
+export class Store {
 
     @observable.ref
     configMap = new ObservableMap<string, IConfig>()
@@ -26,30 +26,39 @@ export class Store extends DB {
     // 获取配置
     @action.bound
     async fetchConfig(): Promise<void> {
-        const result = await fetch('http://119.28.193.246/manage/config')
-        console.log(result)
-        // result.map(config => {
-        //     this.configMap.set(config.name, config)
-        // })
+        const result = await fetch('/manage/config')
+        const { Data } = await result.json()
+        this.configMap.clear()
+        Data.forEach((config: IConfig) => {
+            this.configMap.set(config.name, config)
+        })
     }
+
 
     // 更新配置
     @autobind
     async saveConfig(data?: IConfig | IConfig[]): Promise<void> {
+        let body = null
+
         if (!data) {
-            await this.uploadObject('front.config.json', JSON.stringify(this.configArray))
-            this.fetchConfig()
-            return
+            // 没有数据
+            body = JSON.stringify(this.configArray.slice())
         }
 
-        if (Array.isArray(data)) {
-            await this.uploadObject('front.config.json', JSON.stringify(data))
-            this.fetchConfig()
-            return
+        // 数组
+        if (data && Array.isArray(data)) {
+            body = JSON.stringify(data)
         }
 
-        const body = this.configMap.toJS().set(data.name, data)
-        await this.uploadObject('front.config.json', JSON.stringify([...body.values()]))
+
+        if (data && !Array.isArray(data)) {
+            // 单条数据
+            const map = this.configMap.toJS().set(data.name, data)
+            body = JSON.stringify([...map.values()])
+        }
+
+
+        await fetch("/manage/config", { method: 'PATCH', body })
         this.fetchConfig()
     }
 
@@ -59,28 +68,14 @@ export class Store extends DB {
     @autobind
     async ensableConfig(name: string) {
         const config = { ...this.configMap.get(name), enable: true } as IConfig
-
-        const request = await Promise.all([
-            this.saveConfig(config),
-            this.uploadObject(name, config.context)
-        ])
-
-        this.fetchConfig()
-        return request
+        return await this.saveConfig(config)
     }
 
     // 禁用配置
     @autobind
     async disableConfig(name: string) {
         const config = { ...this.configMap.get(name), enable: false } as IConfig
-
-        const request = await Promise.all([
-            this.removeObject(name),
-            this.saveConfig(config)
-        ])
-
-        this.fetchConfig()
-        return request
+        return await this.saveConfig(config)
     }
 
     // 删除配置
@@ -88,26 +83,13 @@ export class Store extends DB {
     async removeConfig(name: string) {
         const configs = this.configMap.toJS()
         configs.delete(name)
-
-        const request = await Promise.all([
-            this.removeObject(name),
-            this.saveConfig([...configs.values()])
-        ])
-
-        this.fetchConfig()
-        return request
+        return await this.saveConfig([...configs.values()])
     }
 
     //  更新配置
     @autobind
     async updateConfig(data: IConfig) {
         await this.saveConfig(data)
-        const request = await !data.enable
-            ? this.removeObject(data.name)
-            : this.uploadObject(data.name, data.context)
-
-        this.fetchConfig()
-        return request
     }
 
     // ======= 对编辑中的数据操作 ======= //

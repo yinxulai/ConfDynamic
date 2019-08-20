@@ -1,4 +1,5 @@
 import DB from './s3'
+import Local from './local'
 import autobind from 'autobind-decorator';
 import { action, ObservableMap, observable, computed } from 'mobx';
 
@@ -31,13 +32,13 @@ export class Store extends DB {
 
         if (Array.isArray(data)) {
             this.configMap.clear()
-            data.forEach(item =>
+            data.forEach(item => {
+                console.log(this.configMap.size)
                 this.configMap.set(item.name, item)
-            )
-            return
+            })
         }
 
-        this.configMap.set(data.name, data)
+
     }
 
     // 更新配置
@@ -141,6 +142,9 @@ export class Store extends DB {
         return this.saveConfig(data)
     }
 
+    // 服务端方法
+
+
 }
 
-export default new Store()
+export default Local

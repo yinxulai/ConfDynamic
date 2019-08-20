@@ -1,5 +1,5 @@
 import React from 'react';
-import Store from './store/local';
+import Store from './store';
 import { Button } from 'antd';
 import Config from './config';
 import ReactDOM from 'react-dom';
@@ -19,7 +19,6 @@ class App extends React.Component<any> {
         Store.fetchConfig()
     }
 
-
     render() {
         const { configArray, creatingConfigArray: createConfigArray } = Store
 
@@ -28,7 +27,7 @@ class App extends React.Component<any> {
                 <div className={styles.root}>
                     <div className={styles.title}>
                         配置管理
-                </div>
+                    </div>
                     <div className={styles.content}>
                         {
                             configArray.map(
