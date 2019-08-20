@@ -14,12 +14,17 @@ func init() {
 
 func main() {
 	app := iris.New()
+	initStaticDir(app)
 	app.Use(logger.New())
 	app.Use(recover.New())
+
+	// 控制页面
+	app.Get("/manage", controller.GetView)
 
 	// 对外提供服务
 	app.Any("/{appid:string}", controller.Export)
 	// 获取配置
+
 	app.Get("/manage/config", controller.GetConfigs)
 	// 更新配置
 	app.Patch("/manage/config", controller.UpdateConfig)
@@ -30,4 +35,9 @@ func main() {
 	}
 
 	app.Run(iris.Addr(port))
+}
+
+func initStaticDir(app *iris.Application) {
+	app.HandleDir("/static", "./view/static")
+	app.RegisterView(iris.HTML("./view", ".html"))
 }

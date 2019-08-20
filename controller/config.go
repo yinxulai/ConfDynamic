@@ -7,6 +7,11 @@ import (
 	"github.com/yinxulai/goutils/restful"
 )
 
+// GetView 获取配置信息
+func GetView(ctx iris.Context) {
+	ctx.View("index.html")
+}
+
 // GetConfigs 获取配置信息
 func GetConfigs(ctx iris.Context) {
 	data, err := store.ReadConfig()
