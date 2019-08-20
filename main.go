@@ -10,6 +10,7 @@ import (
 
 func init() {
 	config.SetStandard("port", ":8080", true, "服务监听的端口，默认 :3030")
+	config.SetStandard("view", "./", true, "前端静态文件位置 默认 ./")
 }
 
 func main() {
@@ -38,6 +39,7 @@ func main() {
 }
 
 func initStaticDir(app *iris.Application) {
-	app.HandleDir("/static", "./view/static")
-	app.RegisterView(iris.HTML("./view", ".html"))
+	path, _ := config.Get("view")
+	app.HandleDir("/static", path+"/static")
+	app.RegisterView(iris.HTML(path, ".html"))
 }
