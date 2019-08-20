@@ -13,13 +13,11 @@ func main() {
 	app.Use(recover.New())
 
 	// 对外提供服务
-	app.Any("/", middler.Application, controller.Export)
-
-	manage := app.Party("/manage")
+	app.Any("/{appid:string}", controller.Export)
 	// 获取配置
-	manage.Get("/config", middler.Admin, controller.GetConfigs)
+	app.Get("/manage/config", controller.GetConfigs)
 	// 更新配置
-	manage.Patch("/config", middler.Admin, controller.UpdateConfig)
+	app.Patch("/manage/config", controller.UpdateConfig)
 
 	app.Run(iris.Addr(":8080"))
 }

@@ -2,22 +2,31 @@ package controller
 
 import (
 	"github.com/kataras/iris"
+	"github.com/yinxulai/ConfDynamic/module"
+	"github.com/yinxulai/ConfDynamic/store"
 )
 
 // Export 对外服务
 func Export(ctx iris.Context) {
-	// identity := ctx.Values().Get("Identity").(string)
+	var data module.Config
+	appid := ctx.Params().GetString("appid")
+	if appid == "" {
+		ctx.JSON(data)
+		return
+	}
 
-	// app, err := store.GetApplicationByIdentity(identity)
-	// if err != nil {
-	// 	ctx.JSON(restful.New(restful.NOTFOUND, err.Error(), nil))
-	// 	ctx.StatusCode(200)
-	// 	return
-	// }
+	configs, err := store.ReadConfig()
+	if err != nil {
+		ctx.JSON(data)
+		return
+	}
 
-	// app.MasterConfigIdentity
+	for _, config := range configs {
+		if config.Name == appid && config.State {
+			ctx.JSON(config)
+			return
+		}
+	}
 
-	// ctx.JSON(restful.New(restful.OK, "", app.OutConfigsReal()))
-	// ctx.StatusCode(200)
-	// return
+	ctx.JSON(data)
 }
