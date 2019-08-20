@@ -25,8 +25,8 @@ func main() {
 
 	manage.Get("/applications", middler.Admin, controller.GetApplications)
 	manage.Post("/application", middler.Admin, controller.CreateApplication)
-	manage.Get("/application/:identity", middler.Admin, controller.GetApplicationByIdentity)
-	manage.Patch("/application/:identity", middler.Admin, controller.UpdateApplicationByIdentity)
+	manage.Get("/application/{identity: string}", middler.Admin, controller.GetApplicationByIdentity)
+	manage.Patch("/application/{identity: string}", middler.Admin, controller.UpdateApplicationByIdentity)
 
 	app.Run(iris.Addr(":8080"))
 }

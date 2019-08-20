@@ -33,12 +33,14 @@ func Application(ctx iris.Context) {
 	if err != nil {
 		ctx.JSON(restful.New(restful.SERVERERR, err.Error(), nil))
 		ctx.StatusCode(200)
+		return
 	}
 
 	// 应用不存在
 	if !has {
 		ctx.JSON(restful.New(restful.UNAUTHORIZED, "", nil))
 		ctx.StatusCode(200)
+		return
 	}
 
 	ctx.Values().Set("Auth", true)

@@ -5,7 +5,14 @@ import "github.com/yinxulai/ConfDynamic/module"
 var currentService Service
 
 func init() {
-	currentService = new(localFileService)
+	service := new(localFileService)
+	service.ConfigFilePath = "./config.db"
+	service.ApplicationFilePath = "./application.db"
+
+	service.ConfigCache = make(map[string]*module.Config, 10)
+	service.ApplicationCache = make(map[string]*module.Application, 10)
+
+	currentService = service
 }
 
 // Service 负责存储

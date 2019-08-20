@@ -14,8 +14,12 @@ func Export(ctx iris.Context) {
 	if err != nil {
 		ctx.JSON(restful.New(restful.NOTFOUND, err.Error(), nil))
 		ctx.StatusCode(200)
+		return
 	}
 
-	ctx.JSON(restful.New(restful.OK, "", app.OutConfigsReal()))
-	ctx.StatusCode(200)
+	// app.MasterConfigIdentity
+
+	// ctx.JSON(restful.New(restful.OK, "", app.OutConfigsReal()))
+	// ctx.StatusCode(200)
+	// return
 }

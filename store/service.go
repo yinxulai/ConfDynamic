@@ -3,6 +3,7 @@ package store
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"sync"
 
 	"github.com/yinxulai/goutils/file"
@@ -143,8 +144,8 @@ func (s *localFileService) UpdateConfigByIdentity(identity string, data *module.
 func (s *localFileService) loadFile() error {
 	var err error
 
-	s.RLocker()
-	defer s.RUnlock()
+	// s.RLock()
+	// defer s.RUnlock()
 
 	err = file.ReadJSON(s.ConfigFilePath, s.ConfigCache)
 	err = file.ReadJSON(s.ApplicationFilePath, s.ApplicationCache)
@@ -155,14 +156,15 @@ func (s *localFileService) loadFile() error {
 func (s *localFileService) dumpFile() error {
 	var err error
 
-	s.Lock()
-	defer s.Unlock()
+	// s.RLocker()
+	// defer s.RUnlock()
 
 	configData, err := json.Marshal(s.ConfigCache)
-	ApplicationData, err := json.Marshal(s.CreateApplication)
+	ApplicationData, err := json.Marshal(s.ApplicationCache)
 
 	err = file.WriteByte(s.ConfigFilePath, false, configData)
 	err = file.WriteByte(s.ApplicationFilePath, false, ApplicationData)
 
+	fmt.Println(err)
 	return err
 }
