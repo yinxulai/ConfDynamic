@@ -1,5 +1,5 @@
 import React from 'react';
-import Store from './store';
+import Store from './store/local';
 import { Button } from 'antd';
 import Config from './config';
 import ReactDOM from 'react-dom';

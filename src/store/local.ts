@@ -26,18 +26,11 @@ export class Store extends DB {
     // 获取配置
     @action.bound
     async fetchConfig(): Promise<void> {
-        const result = await this.downloadObject('front.config.json')
-        const data: IConfig | IConfig[] = JSON.parse(result)
-
-        if (Array.isArray(data)) {
-            this.configMap.clear()
-            data.forEach(item =>
-                this.configMap.set(item.name, item)
-            )
-            return
-        }
-
-        this.configMap.set(data.name, data)
+        const result = await fetch('http://119.28.193.246/manage/config')
+        console.log(result)
+        // result.map(config => {
+        //     this.configMap.set(config.name, config)
+        // })
     }
 
     // 更新配置
@@ -127,7 +120,7 @@ export class Store extends DB {
     @action.bound
     addCreatingConfig() {
         const name = `新配置-${this.creatingConfigMap.size}`
-        this.creatingConfigMap.set(name, { name } as IConfig)
+        this.creatingConfigMap.set(name, { name: name } as IConfig)
     }
 
     @action.bound
