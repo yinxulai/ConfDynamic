@@ -5,7 +5,12 @@ import (
 	"github.com/kataras/iris/middleware/logger"
 	"github.com/kataras/iris/middleware/recover"
 	"github.com/yinxulai/ConfDynamic/controller"
+	"github.com/yinxulai/goutils/config"
 )
+
+func init() {
+	config.SetStandard("port", ":8080", true, "服务监听的端口，默认 :3030")
+}
 
 func main() {
 	app := iris.New()
@@ -19,5 +24,10 @@ func main() {
 	// 更新配置
 	app.Patch("/manage/config", controller.UpdateConfig)
 
-	app.Run(iris.Addr(":8080"))
+	port, err := config.Get("port")
+	if err != nil {
+		panic("请指定 port")
+	}
+
+	app.Run(iris.Addr(port))
 }

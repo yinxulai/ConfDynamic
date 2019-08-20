@@ -2,31 +2,29 @@ package controller
 
 import (
 	"github.com/kataras/iris"
-	"github.com/yinxulai/ConfDynamic/module"
 	"github.com/yinxulai/ConfDynamic/store"
 )
 
 // Export 对外服务
 func Export(ctx iris.Context) {
-	var data module.Config
 	appid := ctx.Params().GetString("appid")
 	if appid == "" {
-		ctx.JSON(data)
+		ctx.Text("")
 		return
 	}
 
 	configs, err := store.ReadConfig()
 	if err != nil {
-		ctx.JSON(data)
+		ctx.Text("")
 		return
 	}
 
 	for _, config := range configs {
 		if config.Name == appid && config.State {
-			ctx.JSON(config)
+			ctx.Text(config.Context)
 			return
 		}
 	}
 
-	ctx.JSON(data)
+	ctx.Text("")
 }
