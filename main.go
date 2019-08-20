@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/logger"
 	"github.com/kataras/iris/middleware/recover"
@@ -40,6 +42,7 @@ func main() {
 
 func initStaticDir(app *iris.Application) {
 	path, _ := config.Get("view")
+	fmt.Println(path)
 	app.HandleDir("/static", path+"/static")
 	app.RegisterView(iris.HTML(path, ".html"))
 }
