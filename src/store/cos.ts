@@ -60,8 +60,8 @@ export default class Cos {
     @autobind // 创建连接
     createCosClient(secretId?: string, secretKey?: string, bucketUrl?: string): any {
         return new COS({
-            SecretId: 'AKIDC8pKZZykc7MK1RPWDKxEExO8bnjOZtjH',
-            SecretKey: '0A4g21jAKEuJRIRIsCGUR8Yn44oPjnaL',
+            SecretId: '',
+            SecretKey: '',
         });
     }
 }
