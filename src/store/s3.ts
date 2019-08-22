@@ -58,8 +58,8 @@ export default class S3 {
         // AWS S3
         return new SDK.S3({
             region: 'ap-southeast-1',
-            accessKeyId: 'AKIAINF2QWPZY6OB4ZSQ',
-            secretAccessKey: '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',
+            accessKeyId: '',
+            secretAccessKey: '6yLO3R/',
         })
     }
 }
